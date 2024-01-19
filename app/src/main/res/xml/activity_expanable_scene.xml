@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="250"
+        motion:motionInterpolator="easeOut">
+       <KeyFrameSet>
+       </KeyFrameSet>
+        <OnClick motion:targetId="@+id/img"
+            motion:clickAction="toggle" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/tvDes0"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            android:layout_marginStart="16dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/tvDes1"
+            motion:layout_constraintEnd_toEndOf="@+id/tvDes0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            motion:layout_constraintTop_toBottomOf="@+id/tvDes0"
+            motion:layout_constraintStart_toStartOf="@+id/tvDes0"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/tvDes2"
+            motion:layout_constraintEnd_toEndOf="@+id/tvDes0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:alpha="1"
+            motion:layout_constraintTop_toBottomOf="@+id/tvDes1"
+            motion:layout_constraintStart_toStartOf="@+id/tvDes0"
+            android:layout_marginTop="16dp" />
+        <Constraint
+            android:id="@+id/img"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="180"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/tvDes0"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            android:layout_marginStart="16dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="0dp" />
+        <Constraint
+            android:id="@+id/tvDes1"
+            motion:layout_constraintEnd_toEndOf="@+id/tvDes0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            motion:layout_constraintTop_toBottomOf="@+id/tvDes0"
+            motion:layout_constraintStart_toStartOf="@+id/tvDes0"
+            android:layout_marginTop="0dp" />
+        <Constraint
+            android:id="@+id/tvDes2"
+            motion:layout_constraintEnd_toEndOf="@+id/tvDes0"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            motion:layout_constraintTop_toBottomOf="@+id/tvDes1"
+            motion:layout_constraintStart_toStartOf="@+id/tvDes0"
+            android:layout_marginTop="0dp" />
+        <Constraint
+            android:id="@+id/img"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="0"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" />
+
+    </ConstraintSet>
+</MotionScene>
