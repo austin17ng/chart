@@ -1,27 +1,41 @@
-package com.vnpay.testapplication.barchart
+package com.vnpay.testapplication.barchart.components
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.vnpay.testapplication.Utils
 
-internal class LineView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    private val listData = mutableListOf<FinanceBarChart.Data>()
-    private var barWidth: Float = 0F
+class LineContainer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+    private val listData = mutableListOf<BarChart.Data>()
+    var barWidth: Float = 0F
+
+    val paintLine = Paint().apply {
+        isAntiAlias = true
+        color = Color.parseColor("#F2570A")
+        strokeWidth = Utils.dpToPx(context, 2F)
+    }
+
+    val circlePaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.parseColor("#F2570A")
+    }
+
+    val strokePaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.parseColor("#B3FFFFFF")
+        style = Paint.Style.STROKE
+        strokeWidth = Utils.dpToPx(context, Utils.dpToPx(context, 1F))
+    }
+
 
     init {
         setWillNotDraw(false)
     }
 
-    fun setBarWidth(barWidth: Float) {
-        this.barWidth = barWidth
-    }
-
-    fun setListData(list: List<FinanceBarChart.Data>) {
+    fun setListData(list: List<BarChart.Data>) {
         this.listData.clear()
         listData.addAll(list)
     }
@@ -37,11 +51,6 @@ internal class LineView(context: Context, attrs: AttributeSet?) : FrameLayout(co
     private fun drawLine(canvas: Canvas) {
         val maxIncome = listData.map { it.income }.max()
 
-        val paint = Paint().apply {
-            isAntiAlias = true
-            color = Color.parseColor("#F2570A")
-            strokeWidth = Utils.dpToPx(context, 2F)
-        }
 
         var prevX = barWidth / 2
         var prevY = height.toFloat() * (1 - listData[0].expense / maxIncome)
@@ -59,7 +68,7 @@ internal class LineView(context: Context, attrs: AttributeSet?) : FrameLayout(co
                 nextY = height - barWidth / 2
             }
 
-            canvas.drawLine(prevX, prevY, nextX, nextY, paint)
+            canvas.drawLine(prevX, prevY, nextX, nextY, paintLine)
 
             prevX = nextX
             prevY = nextY
@@ -68,17 +77,6 @@ internal class LineView(context: Context, attrs: AttributeSet?) : FrameLayout(co
 
     private fun drawDots(canvas: Canvas) {
         val maxIncome = listData.map { it.income }.max()
-
-        val circlePaint = Paint().apply {
-            isAntiAlias = true
-            color = Color.parseColor("#F2570A")
-        }
-        val strokePaint = Paint().apply {
-            isAntiAlias = true
-            color = Color.parseColor("#B3FFFFFF")
-            style = Paint.Style.STROKE
-            strokeWidth = Utils.dpToPx(context, Utils.dpToPx(context, 1F))
-        }
 
         var x = barWidth / 2
         var spaceBetween = (width.toFloat() - listData.size * barWidth) / (listData.size - 1)
@@ -93,6 +91,5 @@ internal class LineView(context: Context, attrs: AttributeSet?) : FrameLayout(co
             x += spaceBetween + barWidth
         }
     }
-
 
 }
