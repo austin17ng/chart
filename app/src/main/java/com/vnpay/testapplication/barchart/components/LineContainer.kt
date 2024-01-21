@@ -2,42 +2,27 @@ package com.vnpay.testapplication.barchart.components
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
-import com.vnpay.testapplication.Utils
 
 class LineContainer(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    private val listData = mutableListOf<BarChart.Data>()
+    private val listPercentage = mutableListOf<Float>()
+
     var barWidth: Float = 0F
 
-    val paintLine = Paint().apply {
-        isAntiAlias = true
-        color = Color.parseColor("#F2570A")
-        strokeWidth = Utils.dpToPx(context, 2F)
-    }
-
-    val circlePaint = Paint().apply {
-        isAntiAlias = true
-        color = Color.parseColor("#F2570A")
-    }
-
-    val strokePaint = Paint().apply {
-        isAntiAlias = true
-        color = Color.parseColor("#B3FFFFFF")
-        style = Paint.Style.STROKE
-        strokeWidth = Utils.dpToPx(context, Utils.dpToPx(context, 1F))
-    }
-
+    var linePaint: Paint? = null
+    var circlePaint: Paint? = null
+    var strokePaint: Paint? = null
 
     init {
         setWillNotDraw(false)
     }
 
-    fun setListData(list: List<BarChart.Data>) {
-        this.listData.clear()
-        listData.addAll(list)
+    fun setListData(list: List<Float>) {
+        this.listPercentage.clear()
+        listPercentage.addAll(list)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -48,47 +33,43 @@ class LineContainer(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         }
     }
 
-    private fun drawLine(canvas: Canvas) {
-        val maxIncome = listData.map { it.income }.max()
-
-
-        var prevX = barWidth / 2
-        var prevY = height.toFloat() * (1 - listData[0].expense / maxIncome)
-        if (prevY >= height - barWidth / 2) {
-            prevY = height - barWidth / 2
+    private fun calcYPos(percentage: Float): Float {
+        var yPos = height.toFloat() * (1F - percentage) + barWidth / 2
+        if (yPos >= height.toFloat() - barWidth / 2) {
+            yPos = height.toFloat() - barWidth / 2
         }
-        var spaceBetween = (width.toFloat() - listData.size * barWidth) / (listData.size - 1)
-        listData.forEachIndexed { index, data ->
-            if (index == listData.size - 1) return@forEachIndexed
+        return yPos
+    }
 
-            val nextX = prevX + spaceBetween + barWidth
+    private fun calcXPos(index: Int): Float {
+        if (index == 0) return barWidth / 2
 
-            var nextY = height.toFloat() * (1 - listData[index + 1].expense / maxIncome)
-            if (nextY >= height - barWidth / 2) {
-                nextY = height - barWidth / 2
-            }
+        val spaceBetween =
+            (width.toFloat() - listPercentage.size * barWidth) / (listPercentage.size - 1)
+        return (spaceBetween + barWidth) * index + barWidth / 2
+    }
 
-            canvas.drawLine(prevX, prevY, nextX, nextY, paintLine)
+    private fun drawLine(canvas: Canvas) {
+        listPercentage.forEachIndexed { index, data ->
+            if (index == listPercentage.size - 1) return@forEachIndexed
 
-            prevX = nextX
-            prevY = nextY
+            canvas.drawLine(
+                calcXPos(index),
+                calcYPos(data),
+                calcXPos(index + 1),
+                calcYPos(listPercentage[index + 1]),
+                linePaint!!
+            )
         }
     }
 
     private fun drawDots(canvas: Canvas) {
-        val maxIncome = listData.map { it.income }.max()
+        listPercentage.forEachIndexed { index, percentage ->
+            val y = calcYPos(percentage)
+            val x = calcXPos(index)
 
-        var x = barWidth / 2
-        var spaceBetween = (width.toFloat() - listData.size * barWidth) / (listData.size - 1)
-        listData.forEachIndexed { index, data ->
-            var y = height.toFloat() * (1 - data.expense / maxIncome)
-            if (y >= height - barWidth / 2) {
-                y = height - barWidth / 2
-            }
-
-            canvas.drawCircle(x, y, barWidth / 2, strokePaint)
-            canvas.drawCircle(x, y, barWidth / 4, circlePaint)
-            x += spaceBetween + barWidth
+            canvas.drawCircle(x, y, barWidth / 4, strokePaint!!)
+            canvas.drawCircle(x, y, barWidth / 4, circlePaint!!)
         }
     }
 

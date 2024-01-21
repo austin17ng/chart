@@ -75,16 +75,16 @@ class TooltipContainer(context: Context, attrs: AttributeSet?) : FrameLayout(con
         var rectLeft = triangleX - bounds.width().toFloat() / 3 - tooltipPaddingHorizontal
         val rectBottom = triangleY - triangleHeight
 
-        if (rectRight > width + spaceToBarChart) {
+        if (rectRight >= width + spaceToBarChart) {
             val spaceExtra = rectRight - (width + spaceToBarChart)
-            rectRight -= spaceExtra
-            rectLeft -= spaceExtra
+            rectRight = rectRight - spaceExtra - spaceToBarChart / 3
+            rectLeft = rectLeft - spaceExtra - spaceToBarChart / 3
         }
 
-        if (rectLeft < -spaceToBarChart) {
+        if (rectLeft <= -spaceToBarChart) {
             val spaceExtra = -spaceToBarChart - rectLeft
-            rectRight += spaceExtra
-            rectLeft += spaceExtra
+            rectRight += spaceExtra + spaceToBarChart / 3
+            rectLeft += spaceExtra + spaceToBarChart / 3
         }
 
         path.addRoundRect(
