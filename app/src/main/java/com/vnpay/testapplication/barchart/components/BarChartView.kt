@@ -16,9 +16,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    data class Data(val expense: Float, val income: Float, val time: String)
-
-    private val listData = mutableListOf<Data>()
+    private val listData = mutableListOf<BarData>()
     private val listBarView = mutableListOf<BarView>()
     val barContainer: LinearLayout = LinearLayout(context)
     val lineContainer: LineContainer = LineContainer(context, attrs)
@@ -55,7 +53,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
         clipChildren = false
     }
 
-    fun submitData(data: List<Data>) {
+    fun submitData(data: List<BarData>) {
         this.listData.clear()
         this.listData.addAll(data)
     }
@@ -257,11 +255,14 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
     }
 
     private fun onBarClicked(barView: BarView) {
+        if (!listData.isAllSingleValue()) return
+
         val selectedIndex = listBarView.indexOf(barView)
+        val message = (listData[selectedIndex] as BarSingleValue).value
         tooltipContainer.showTooltip(
             barView.x + barView.width / 2,
             barView.getBarTopPos(),
-            NumberFormat.getNumberInstance(Locale.US).format(listData[selectedIndex].income)
+            NumberFormat.getNumberInstance(Locale.US).format(message)
         )
 
         listBarView.forEachIndexed { index, barView ->
@@ -281,14 +282,18 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
     private fun calcBarData() {
         when (type) {
             TYPE.SINGLE_TOOL_TIP -> {
-                val maxIncome = this.listData.maxOf { it.income }
-                listData.forEachIndexed { index, data ->
-                    listBarView[index].percentage = data.income / maxIncome
+                if (!listData.isAllSingleValue()) return
+                val list = listData as List<BarSingleValue>
+                val maxIncome = list.maxOf { it.value }
+                list.forEachIndexed { index, data ->
+                    listBarView[index].percentage = data.value / maxIncome
                 }
             }
 
             TYPE.OVERSPENDING -> {
-                listData.forEachIndexed { index, data ->
+                if (!listData.isAllTwoValues()) return
+                val list = listData as List<BarTwoValues>
+                list.forEachIndexed { index, data ->
                     if (data.expense < data.income) {
                         listBarView[index].percentage = data.expense / data.income
                     } else {
@@ -300,13 +305,15 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
             }
 
             TYPE.LINE -> {
+                if (!listData.isAllTwoValues()) return
+                val list = listData as List<BarTwoValues>
                 val maxIncome = this.listData.maxOf { it.income }
-                listData.forEachIndexed { index, data ->
+                list.forEachIndexed { index, data ->
                     listBarView[index].percentage = data.income / maxIncome
                 }
 
                 lineContainer.setListData(
-                    listData.map { it.expense / maxIncome }
+                    list.map { it.expense / maxIncome }
                 )
             }
         }
@@ -406,4 +413,11 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
         LINE, // thu chi, có show line
         OVERSPENDING // thu chi, có show overspending
     }
+
+    sealed class BarData(val time: String)
+    class BarSingleValue(val value: Float, time: String) : BarData(time)
+    class BarTwoValues(val expense: Float, val income: Float, time: String) : BarData(time)
+
+    fun List<BarData>.isAllSingleValue() = this.all { it is BarSingleValue }
+    fun List<BarData>.isAllTwoValues() = this.all { it is BarTwoValues }
 }

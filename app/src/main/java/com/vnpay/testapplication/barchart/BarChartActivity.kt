@@ -1,10 +1,12 @@
 package com.vnpay.testapplication.barchart
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.vnpay.testapplication.R
 import com.vnpay.testapplication.barchart.components.BarChartView
+import kotlin.random.Random
 
 class BarChartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,23 +14,56 @@ class BarChartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_bar_chart)
 
         val barChart = findViewById<BarChartView>(R.id.barChart)
-        barChart.submitData(
-            listOf(
-                BarChartView.Data(225000000F, 450000000F, "T1\n2022"),
-                BarChartView.Data(150000000F, 300000000F, "Feb"),
-                BarChartView.Data(200000000F, 500000000F, "Mar"),
-                BarChartView.Data(300000000F, 600000000F, "Apr"),
-                BarChartView.Data(100000F, 10000000F, "May"),
-                BarChartView.Data(100000000F, 250000000F, "Jun"),
-                BarChartView.Data(550000000F, 800000000F, "Jul"),
-                BarChartView.Data(850000000F, 900000000F, "Aug"),
-                BarChartView.Data(600000000F, 500000000F, "Sept"),
-                BarChartView.Data(200000000F, 600000000F, "Oct"),
-                BarChartView.Data(300000000F, 800000000F, "Nov"),
-                BarChartView.Data(100000000F, 700000000F, "Dec"),
-            )
-        )
         barChart.type = BarChartView.TYPE.OVERSPENDING
+
+        when (barChart.type) {
+            BarChartView.TYPE.SINGLE_TOOL_TIP -> {
+                val list = mutableListOf<BarChartView.BarSingleValue>()
+                (1..12).forEach {
+                    list.add(
+                        BarChartView.BarSingleValue(
+                            randomFloat(100F, 1000F),
+                            randomString(2)
+                        )
+                    )
+                }
+                barChart.submitData(list)
+            }
+
+            else -> {
+                val list = mutableListOf<BarChartView.BarTwoValues>()
+                (1..12).forEach {
+                    val income = randomFloat(100F, 1000F)
+                    val expense  = income * randomFloat(0F, 1.2F)
+                    list.add(
+                        BarChartView.BarTwoValues(
+                            expense,
+                            income,
+                            randomString(2)
+                        )
+                    )
+                }
+                barChart.submitData(list)
+            }
+        }
         barChart.build()
+
+        findViewById<Button>(R.id.btn).setOnClickListener {
+            Intent(this, BarChartActivity::class.java).also { startActivity(it) }
+            finish()
+        }
+    }
+
+    fun randomFloat(min: Float, max: Float): Float {
+        require(min < max) { "Invalid range: min must be less than max" }
+
+        return Random.nextFloat() * (max - min) + min
+    }
+
+    fun randomString(length: Int): String {
+        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        return (1..length)
+            .map { charset[Random.nextInt(charset.length)] }
+            .joinToString("")
     }
 }
