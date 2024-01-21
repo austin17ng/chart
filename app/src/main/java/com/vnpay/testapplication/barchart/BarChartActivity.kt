@@ -14,7 +14,7 @@ class BarChartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_bar_chart)
 
         val barChart = findViewById<BarChartView>(R.id.barChart)
-        barChart.type = BarChartView.TYPE.OVERSPENDING
+        barChart.type = BarChartView.TYPE.LINE
 
         when (barChart.type) {
             BarChartView.TYPE.SINGLE_TOOL_TIP -> {

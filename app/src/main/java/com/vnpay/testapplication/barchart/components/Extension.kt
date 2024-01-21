@@ -4,18 +4,18 @@ import android.graphics.Canvas
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Shader
+import android.text.StaticLayout
 
 fun Canvas.drawMultilineTextCenter(text: String, x: Float, y: Float, paint: Paint) {
-    //todo
-    //trick
-    val fontHeight = paint.fontMetrics.descent - paint.fontMetrics.ascent
-    var yPos = y - 1F
+    val fm = paint.fontMetrics
+    var yPos = y - fm.top
     for (line in text.split("\n")) {
         val xPos = x - paint.measureText(line)/2
-        yPos += fontHeight
         this.drawText(line, xPos, yPos, paint)
+        yPos += fm.leading + fm.bottom - fm.top
     }
 }
+
 fun Canvas.drawRoundRect(left: Float, top: Float, right: Float, bottom: Float, paint: Paint) {
     if (paint is VerticalGradientPaint) {
         drawRoundRectGra(left, top, right, bottom, paint)

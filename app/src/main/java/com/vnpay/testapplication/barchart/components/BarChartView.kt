@@ -380,10 +380,10 @@ class BarChartView(context: Context, attrs: AttributeSet?) : FrameLayout(context
     }
 
     private fun getTimeLineHeight(): Float {
-        val maxLine = listData.maxOfOrNull { it.time.split("\n").size } ?: 0
-        val fontHeight =
-            paintTextTimeLine.fontMetrics.descent - paintTextTimeLine.fontMetrics.ascent
-        return fontHeight * maxLine
+        val maxLine = listData.maxOf { it.time.split("\n").size }
+        val fm = paintTextTimeLine.fontMetrics
+        val lineHeight = fm.bottom - fm.top + fm.leading
+        return lineHeight * maxLine
     }
 
     private fun addBars() {
