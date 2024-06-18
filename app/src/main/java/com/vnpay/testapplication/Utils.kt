@@ -14,4 +14,6 @@ object Utils {
     }
 
     fun getBarChartType(): Int = 0
+
+    fun getTheme(): Int = 0
 }

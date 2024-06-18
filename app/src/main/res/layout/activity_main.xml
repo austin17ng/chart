@@ -21,4 +21,33 @@
         android:layout_height="wrap_content"
         android:text="Bar Chart"/>
 
+    <Button
+        android:id="@+id/btnTooltip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tooltip"/>
+
+    <Button
+        android:id="@+id/btnDnD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DnD"/>
+
+    <Button
+        android:id="@+id/btnLio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lio"/>
+
+    <Button
+        android:id="@+id/btnTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tabs"/>
+
+    <Button
+        android:id="@+id/btnPaging"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Paging"/>
 </LinearLayout>
